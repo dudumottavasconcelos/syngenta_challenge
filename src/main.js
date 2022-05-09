@@ -7,10 +7,15 @@ function getCheapestHotel(input) { //DO NOT change the function's name.
     let day = consumerType[1].split(',');
     let sizeOfDay = day.length;
 
-    // variáveis para cálculo do melhor hotel
+    // variáveis para cálculo da diária
     let getPriceOfLakewood = 0.0;
     let getPriceOfBridgewood = 0.0;
     let getPriceOfRidgewood = 0.0;
+
+    // variáveis auxiliares para retornar o melhor preço
+    let allHotelPrices = [];
+    let auxBestPriceHotel;
+    let auxBestPriceIndex;
 
     // calcular os valores
     switch (consumerType[0].toLowerCase()) {
@@ -30,25 +35,25 @@ function getCheapestHotel(input) { //DO NOT change the function's name.
             }
 
             // verificando melhor hotel pelo melhor preço e melhor rating
-            let allHotelPricesRegular = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
-            let bestHotelPriceRegular = getPriceOfLakewood;
-            let bestHotelIndexRegular = 0;
+            allHotelPrices = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
+            auxBestPriceHotel = getPriceOfLakewood;
+            auxBestPriceIndex = 0;
 
-            for (let i = 1; i < allHotelPricesRegular.length; i++) {
-                if (bestHotelPriceRegular > allHotelPricesRegular[i]) {
-                    bestHotelPriceRegular = allHotelPricesRegular[i];
-                    bestHotelIndexRegular = i;
+            for (let i = 1; i < hotels.length; i++) {
+                if (auxBestPriceHotel > allHotelPrices[i]) {
+                    auxBestPriceHotel = allHotelPrices[i];
+                    auxBestPriceIndex = i;
                 } else {
-                    if (bestHotelPriceRegular === allHotelPricesRegular[i]) {
-                        if (hotels[bestHotelIndexRegular].starRating < hotels[i].starRating) {
-                            bestHotelPriceRegular = allHotelPricesRegular[i];
-                            bestHotelIndexRegular = i;
+                    if (auxBestPriceHotel === allHotelPrices[i]) { // se os valores forem iguais
+                        if (hotels[auxBestPriceIndex].starRating < hotels[i].starRating) { // retorna o melhor star rating
+                            auxBestPriceHotel = allHotelPrices[i];
+                            auxBestPriceIndex = i;
                         }
                     }
                 }
             }
 
-            return hotels[bestHotelIndexRegular].name;
+            return hotels[auxBestPriceIndex].name;
             break;
 
         case 'rewards':
@@ -67,25 +72,25 @@ function getCheapestHotel(input) { //DO NOT change the function's name.
             }
 
             // verificando melhor hotel pelo melhor preço e melhor rating
-            let allHotelPricesRewards = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
-            let bestHotelPriceRewards = getPriceOfLakewood;
-            let bestHotelIndexRewards = 0;
+            allHotelPrices = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
+            auxBestPriceHotel = getPriceOfLakewood;
+            auxBestPriceIndex = 0;
 
-            for (let i = 1; i < allHotelPricesRewards.length; i++) {
-                if (bestHotelPriceRewards > allHotelPricesRewards[i]) {
-                    bestHotelPriceRewards = allHotelPricesRewards[i];
-                    bestHotelIndexRewards = i;
+            for (let i = 1; i < hotels.length; i++) {
+                if (auxBestPriceHotel > allHotelPrices[i]) {
+                    auxBestPriceHotel = allHotelPrices[i];
+                    auxBestPriceIndex = i;
                 } else {
-                    if (bestHotelPriceRewards === allHotelPricesRewards[i]) {
-                        if (hotels[bestHotelIndexRewards].starRating < hotels[i].starRating) {
-                            bestHotelPriceRewards = allHotelPricesRewards[i];
-                            bestHotelIndexRewards = i;
+                    if (auxBestPriceHotel === allHotelPrices[i]) { // se os valores forem iguais
+                        if (hotels[auxBestPriceIndex].starRating < hotels[i].starRating) { // retorna o melhor star rating
+                            auxBestPriceHotel = allHotelPrices[i];
+                            auxBestPriceIndex = i;
                         }
                     }
                 }
             }
 
-            return hotels[bestHotelIndexRewards].name;
+            return hotels[auxBestPriceIndex].name;
             break;
 
         default:
