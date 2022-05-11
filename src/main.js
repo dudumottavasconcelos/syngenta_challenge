@@ -1,96 +1,75 @@
 const _hotels = require("./hotels");
 const hotels = _hotels.hotels;
 
+function getBestPriceHotelIndex (allHotelPrices) {
+    let auxBestPriceHotel = allHotelPrices[0];
+    let auxBestPriceIndex = 0;
+
+    allHotelPrices.map((getPrice, index) => {
+        if (auxBestPriceHotel > getPrice) {
+            auxBestPriceHotel = getPrice;
+            auxBestPriceIndex = index;
+        } else {
+            if (auxBestPriceHotel == getPrice) {
+                if (hotels[auxBestPriceIndex].starRating < hotels[index].starRating) {
+                    auxBestPriceHotel = getPrice;
+                    auxBestPriceIndex = index;
+                }
+            }
+        }
+    });
+
+    return auxBestPriceIndex;
+}
+
 function getCheapestHotel(input) { //DO NOT change the function's name.
     // variáveis para fazer busca no input passado
     const consumerType = input.split(':');
-    let day = consumerType[1].split(',');
-    let sizeOfDay = day.length;
+    let day = consumerType[1].split(',');    
 
-    // variáveis para cálculo da diária
-    let getPriceOfLakewood = 0.0;
-    let getPriceOfBridgewood = 0.0;
-    let getPriceOfRidgewood = 0.0;
-
-    // variáveis auxiliares para retornar o melhor preço
+    /*
+    declarando array para somar cada diária
+    nota-se a importância de deixar os valores em 0
+    para não retornar como NaN
+    */
     let allHotelPrices = [];
-    let auxBestPriceHotel;
-    let auxBestPriceIndex;
+    hotels.map(() => allHotelPrices.push(0));
 
-    // calcular os valores
     switch (consumerType[0].toLowerCase()) {
         case 'regular':
-            for (let i = 0; i < sizeOfDay; i++) {
-                if (day[i].slice(9).includes('sat') || day[i].slice(9).includes('sun')) {
-                    // regular: caso fim de semana
-                    getPriceOfLakewood += hotels[0].regular.weekendPrice;
-                    getPriceOfBridgewood += hotels[1].regular.weekendPrice;
-                    getPriceOfRidgewood += hotels[2].regular.weekendPrice;
-                } else {
-                    // regular: caso dia de semana                   
-                    getPriceOfLakewood += hotels[0].regular.weekDayPrice;                    
-                    getPriceOfBridgewood += hotels[1].regular.weekDayPrice;
-                    getPriceOfRidgewood += hotels[2].regular.weekDayPrice;
+            day.map(getDay => { // um loop em todos os dias da diária
+                if (getDay.slice(9).includes('sat') || getDay.slice(9).includes('sun')) { // se for fim de semana
+                    hotels.map((getHotel, index) => { 
+                        allHotelPrices[index] += hotels[index].regular.weekendPrice; // vai somar as diárias de fim de semana em cada index de hotel
+                    });                    
+                } else { // se for dia de semana
+                    hotels.map((getHotel, index) => {
+                        allHotelPrices[index] += hotels[index].regular.weekDayPrice; // vai somar as diárias de dia de semana em cada index de hotel
+                    });  
                 }
-            }
+            });
 
-            // verificando melhor hotel pelo melhor preço e melhor rating
-            allHotelPrices = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
-            auxBestPriceHotel = getPriceOfLakewood;
-            auxBestPriceIndex = 0;
+            let indexOfHotelRegular = getBestPriceHotelIndex(allHotelPrices); // busca o melhor preço e retorna o index do hotel
 
-            for (let i = 1; i < hotels.length; i++) {
-                if (auxBestPriceHotel > allHotelPrices[i]) {
-                    auxBestPriceHotel = allHotelPrices[i];
-                    auxBestPriceIndex = i;
-                } else {
-                    if (auxBestPriceHotel === allHotelPrices[i]) { // se os valores forem iguais
-                        if (hotels[auxBestPriceIndex].starRating < hotels[i].starRating) { // retorna o melhor star rating
-                            auxBestPriceHotel = allHotelPrices[i];
-                            auxBestPriceIndex = i;
-                        }
-                    }
-                }
-            }
-
-            return hotels[auxBestPriceIndex].name;
+            return hotels[indexOfHotelRegular].name;
             break;
 
         case 'rewards':
-            for (let i = 0; i < sizeOfDay; i++) {
-                if (day[i].slice(9).includes('sat') || day[i].slice(9).includes('sun')) {
-                    // reward: caso fim de semana
-                    getPriceOfLakewood += hotels[0].reward.weekendPrice;
-                    getPriceOfBridgewood += hotels[1].reward.weekendPrice;
-                    getPriceOfRidgewood += hotels[2].reward.weekendPrice;
+            day.map(getDay => { // um loop em todos os dias da diária
+                if (getDay.slice(9).includes('sat') || getDay.slice(9).includes('sun')) { // se for fim de semana
+                    hotels.map((getHotel, index) => {
+                        allHotelPrices[index] += hotels[index].reward.weekendPrice; // vai somar as diárias de fim de semana em cada index de hotel
+                    });                    
                 } else {
-                    // reward: caso dia de semana
-                    getPriceOfLakewood += hotels[0].reward.weekDayPrice;
-                    getPriceOfBridgewood += hotels[1].reward.weekDayPrice;
-                    getPriceOfRidgewood += hotels[2].reward.weekDayPrice;
+                    hotels.map((getHotel, index) => { // se for dia de semana
+                        allHotelPrices[index] += hotels[index].reward.weekDayPrice; // vai somar as diárias de dia de semana em cada index de hotel
+                    });  
                 }
-            }
+            });
 
-            // verificando melhor hotel pelo melhor preço e melhor rating
-            allHotelPrices = [getPriceOfLakewood, getPriceOfBridgewood, getPriceOfRidgewood];
-            auxBestPriceHotel = getPriceOfLakewood;
-            auxBestPriceIndex = 0;
+            let indexOfHotelReward = getBestPriceHotelIndex(allHotelPrices); // busca o melhor preço e retorna o index do hotel
 
-            for (let i = 1; i < hotels.length; i++) {
-                if (auxBestPriceHotel > allHotelPrices[i]) {
-                    auxBestPriceHotel = allHotelPrices[i];
-                    auxBestPriceIndex = i;
-                } else {
-                    if (auxBestPriceHotel === allHotelPrices[i]) { // se os valores forem iguais
-                        if (hotels[auxBestPriceIndex].starRating < hotels[i].starRating) { // retorna o melhor star rating
-                            auxBestPriceHotel = allHotelPrices[i];
-                            auxBestPriceIndex = i;
-                        }
-                    }
-                }
-            }
-
-            return hotels[auxBestPriceIndex].name;
+            return hotels[indexOfHotelReward].name;
             break;
 
         default:
