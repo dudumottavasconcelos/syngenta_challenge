@@ -53,7 +53,8 @@ function getCheapestHotel(input) { //DO NOT change the function's name.
 
             return hotels[indexOfHotelRegular].name;
             break;
-
+        
+        case 'reward':
         case 'rewards':
             day.map(getDay => { // um loop em todos os dias da diária
                 if (getDay.slice(9).includes('sat') || getDay.slice(9).includes('sun')) { // se for fim de semana
